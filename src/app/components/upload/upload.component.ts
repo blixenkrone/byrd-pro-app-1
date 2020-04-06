@@ -150,7 +150,6 @@ export class UploadComponent implements OnInit, OnDestroy {
 		this.destroyed$.unsubscribe()
 	}
 
-	// ! Danger zone
 	// perc = (x[i] / sum) * 100;
 	uploadStory(storyData: IStoryFile[], user: IProUser) {
 		const mediaType = storyData[0].type!
