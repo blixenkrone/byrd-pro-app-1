@@ -10,12 +10,9 @@ jobs:
     name: Build pro development
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout to master
-        uses: actions/checkout@master
+      - uses: actions/checkout@v2
 
-      - uses: actions/checkout@v1
-      - name: Use Node.js
-        uses: actions/setup-node@v1
+      - uses: actions/setup-node@v1
         with:
           node-version: "12.x"
 
