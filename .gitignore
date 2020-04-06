@@ -4,9 +4,6 @@
 /dist
 /tmp
 /out-tsc
-*.jpeg
-*.png
-*.mp4
 
 # dependencies
 /node_modules
@@ -44,7 +41,4 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
-*.jpeg
-*.mp4
-*.png
 # .vscode/launch.json
