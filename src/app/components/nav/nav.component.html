@@ -1,0 +1,31 @@
+<div class="container">
+	<div class="navbar">
+		<div class="navbar-header">
+			<div class="left">
+				<img src="assets/icons/icon-192x192.png" (click)="homeBound()" alt="byrd-logo" class="logo">
+				<img src="assets/logos/pro_text.svg" (click)="homeBound()" alt="byrd-logo" class="logo">
+			</div>
+			<div class="middle">
+				<!-- <a [routerLink]="['/upload']" routerLinkActive="active">Create story</a>
+					<a [routerLink]="['/bookings']" routerLinkActive="active">Upload booking</a> -->
+			</div>
+			<ng-container *ngIf="user; else placeholderTmp">
+				<div class="right">
+					<h2 class="text">@{{user?.displayName}}</h2>
+					<img class="logo" [matMenuTriggerFor]="menu" src="{{user.userPicture}}" alt="profile-logo">
+					<mat-menu #menu="matMenu" yPosition="below">
+						<button mat-menu-item (click)="logOut()">Log out</button>
+					</mat-menu>
+				</div>
+			</ng-container>
+			<ng-template #placeholderTmp>
+				<img class="logo" src="assets/icons/icon-192x192.png">
+			</ng-template>
+		</div>
+	</div>
+</div>
+
+
+<ng-template #loadTmp>
+	<!-- <mat-spinner class="center-object" [diameter]="150" color="accent"></mat-spinner> -->
+</ng-template>

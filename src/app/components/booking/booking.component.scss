@@ -1,0 +1,97 @@
+@import 'src/scss/colors';
+@import 'src/scss/globals';
+@import 'src/scss/buttons';
+@import 'src/scss/mixins';
+
+.booking-container {
+	padding: 2rem;
+	background: $white;
+	max-width: 38rem;
+	margin: auto;
+	@extend %shadow-rad;
+
+	// * Styled in material.scss
+	.drop-container {
+		.drop-zone-wrapper {
+			display: flex;
+			justify-content: center;
+			width: 100%;
+			cursor: pointer;
+
+			img {
+				position: absolute;
+				max-width: 10rem;
+				z-index: 0;
+				padding: 1rem;
+			}
+		}
+	}
+}
+
+.drop-container {
+	margin-bottom: 1rem;
+}
+
+.file-container {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	max-height: 25rem;
+	margin-bottom: 1rem;
+	overflow: auto;
+
+	table {
+		box-shadow: none;
+		width: 100%;
+	}
+
+	.file {
+		text-align: center;
+		padding: 0.45rem;
+
+		&.wrapped {}
+
+		.first-row {
+			display: flex;
+			justify-content: space-evenly;
+			align-items: center;
+
+			.file-name {
+				@include text-scroll(5rem)
+			}
+		}
+
+		.file-count {}
+	}
+}
+
+.text-container {
+	.split {
+		display: flex;
+		overflow: hidden;
+
+	}
+}
+
+button,
+.upload {
+	display: block;
+	margin-left: auto;
+	@include pro-btn()
+}
+
+@media screen and (max-width: $media-breakpoint) {
+	.drop-container {
+		display: none;
+	}
+
+	.file-container {
+		display: none;
+	}
+
+	.upload {
+		display: none;
+	}
+
+
+}

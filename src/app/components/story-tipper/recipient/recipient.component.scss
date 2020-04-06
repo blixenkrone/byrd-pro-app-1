@@ -1,0 +1,40 @@
+form {
+  text-align: center;
+
+  input {
+    // styled in tags.scss
+  }
+
+  .search-results {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 1rem;
+
+    .result {
+      img {
+        // This is a media clickable
+        border-radius: 50%;
+        height: 5rem;
+        object-fit: cover;
+        max-width: 100%;
+
+        &:hover {
+          opacity: 0.6;
+          cursor: pointer;
+        }
+
+        &.img-selected {
+          animation-name: pulse;
+          animation-duration: 0.5s;
+        }
+      }
+    }
+  }
+
+}
+
+mat-progress-spinner {
+  margin: auto;
+  margin-top: 1rem;
+}

@@ -1,0 +1,56 @@
+@import './colors';
+
+$shade: 0 10px 40px 0 rgba(62, 57, 107, 0.2),
+0 2px 9px 0 rgba(62, 57, 107, 0.2);
+
+$shade-inset: inset 1px 1px 0px rgba(0, 0, 0, 0.1);
+
+$byrd-shade-3: -2px 4px 22px -3px rgba(205, 209, 228, 0.86);
+
+.byrd-shade {
+	box-shadow: $byrd-shade-3;
+}
+
+$std-radius: 3px;
+
+$media-breakpoint: 600px;
+
+.center-object {
+	position: absolute;
+	top: 40%;
+	left: 45%;
+}
+
+%shadow-rad {
+	box-shadow: $shade;
+	padding: 0.25rem;
+	border-radius: $std-radius;
+}
+
+@mixin text-trunc($maxwidth: 10rem) {
+	white-space: pre;
+	overflow: hidden;
+	max-width: $maxwidth;
+	text-overflow: ellipsis;
+}
+
+%scroll-text {
+	word-wrap: break-word;
+	white-space: pre;
+	overflow: scroll;
+}
+
+%g-component-header {
+	text-align: center;
+
+	h1 {
+		color: $sapphire-blue;
+		margin-top: 1rem;
+		font-weight: bold;
+	}
+
+	p {
+		color: $greyhound;
+	}
+
+}

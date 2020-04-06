@@ -1,0 +1,50 @@
+<ng-container *ngIf="(user$ | async) as user; else loadTmp">
+  <ng-container *ngIf="(usrExistingStories$ | async) as existingStories; else loadTmp">
+    <!-- BTN FOR BACK -->
+    <div class="tipper-container">
+      <app-stepper [steps]="steps" (step)="getStep($event)" class="stepper"></app-stepper>
+      <div class="component-header" *ngIf="headliners">
+        <h1>{{headliners[step-1].headline}}</h1>
+        <p>{{headliners[step-1].sub}}</p>
+      </div>
+      <!-- Step 1 -->
+      <div class="stories-wrapper" *ngIf="step===1">
+        <app-story *ngFor="let story of existingStories; trackBy: story?.objectID" [story]="story"
+          (click)="handleStory(story)" class="animated zoomIn">
+        </app-story>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="recipient-wrapper" *ngIf="step===2">
+        <div class="recipient-stories">
+          <div class="miniature" *ngFor="let story of storyTipArr; let i = index;">
+            <img src="{{story.media[0].mediaThumbnailImage}}" alt="{{story.storyHeadline}}">
+          </div>
+        </div>
+        <app-recipient (mediaTipList)="mediaTipList($event)"></app-recipient>
+      </div>
+
+      <!-- Step 3 -->
+      <!-- TODO: FIX THIS WITH COOL STUF -->
+      <ng-container *ngIf="step===3 && responseArray.length > 0">
+        <div class="finished" *ngFor="let res of responseArray; let i = index">
+          <h3> {{res.receiver}} </h3>
+        </div>
+      </ng-container>
+
+    </div>
+    <!-- BTN FOR FORWARD -->
+    <div class="buttons" style="text-align: center;">
+      <button mat-flat-button color="accent" (click)="setStep(step !== 1 ? step-1 : 0)" *ngIf="step<3"> Back </button>
+      <button mat-flat-button color="primary" *ngIf="step===3" (click)="home()"
+        [disabled]="mediaReceivers.length === 0"> Home </button>
+      <button mat-flat-button color="primary" *ngIf="step===1" (click)="setStep(step+1)"
+        [disabled]="storyTipArr.length === 0"> Next </button>
+      <button mat-flat-button color="primary" *ngIf="step===2" (click)="sendMail(user)"
+        [disabled]="mediaReceivers.length === 0">Tip! </button>
+    </div>
+  </ng-container>
+</ng-container>
+<ng-template #loadTmp>
+  <mat-progress-spinner color="accent" mode="indeterminate"></mat-progress-spinner>
+</ng-template>

@@ -1,0 +1,30 @@
+<div class="container">
+  <div class="login animated" [ngClass]="!loggedIn ? 'fadeInDown' : 'fadeOutDown'">
+    <img class="login-logo" src="assets/logos/pro_logo.svg" alt="">
+    <form [formGroup]="loginForm">
+
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input matInput (keyup.enter)="login(fValue('email').value, fValue('password').value)" placeholder="Email"
+          type="text" name="email" formControlName="email">
+        <!-- <mat-icon>backup</mat-icon> -->
+      </mat-form-field>
+
+      <mat-form-field color="warn" appearance="outline">
+        <mat-label>Password</mat-label>
+        <input matInput (keyup.enter)="login(fValue('email').value, fValue('password').value)" placeholder="Password"
+          type="password" name="password" formControlName="password">
+        <!-- <mat-icon matSuffix class="success-icon">check_circle</mat-icon> -->
+      </mat-form-field>
+
+    </form>
+    <button class="login-btn w-100" mat-flat-button [disabled]="(isLoading$ | async) || loginForm.invalid"
+      (click)="login(fValue('email').value, fValue('password').value)">
+      Login
+    </button>
+
+    <div class="signup-pro">
+      <a (click)="signupAsPro()">New to Byrd Pro? Request access here.</a>
+    </div>
+  </div>
+</div>

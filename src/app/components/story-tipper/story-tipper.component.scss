@@ -1,0 +1,63 @@
+@import 'src/scss/colors';
+@import 'src/scss/globals';
+
+.tipper-container {
+  display: grid;
+  background: $white-bird;
+  padding: 2rem;
+  margin: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid $stale;
+  box-shadow: $shade;
+
+  .stepper {
+    margin: 1rem;
+    text-align: center;
+  }
+
+  .component-header {
+    @extend %g-component-header;
+  }
+
+  .stories-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .recipient-wrapper {
+    .recipient-stories {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
+      grid-gap: 0.5rem;
+
+      .miniature {
+        max-width: 10rem;
+        padding: 0.25rem;
+
+        img {
+          box-shadow: $shade;
+          border-radius: $std-radius;
+          max-width: 100%;
+          height: auto;
+        }
+      }
+    }
+  }
+
+
+  .finished {
+    margin: auto;
+  }
+
+
+}
+
+@media screen and (max-width: 555px) {}
+
+mat-progress-spinner {
+  margin: auto;
+  margin-top: 5rem;
+}

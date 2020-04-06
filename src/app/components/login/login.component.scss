@@ -1,0 +1,31 @@
+@import 'src/scss/_colors.scss';
+@import 'src/scss/_gradients.scss';
+@import 'src/styles.scss';
+
+.container {
+  .login {
+    padding: 3rem;
+    max-width: 20rem;
+    margin: auto;
+    text-align: center;
+    background: $white;
+    @extend %shadow-rad;
+
+    img.login-logo {
+      max-width: 100%;
+      height: auto;
+      margin-bottom: 1.5rem;
+    }
+
+    button {
+      &.login-btn {
+        color: $white-goose;
+        background: $gay-flame;
+      }
+    }
+  }
+
+  .signup-pro {
+    padding-top: 2rem;
+  }
+}

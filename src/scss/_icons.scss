@@ -1,0 +1,46 @@
+@import './colors';
+
+@mixin icon($color) {
+  cursor: pointer;
+  color: $color;
+}
+
+.success-icon {
+  @include icon($green-one);
+}
+
+.warn-icon {
+  @include icon($party-bird);
+}
+
+.info-icon {
+  @include icon($sapphire-blue);
+}
+
+.error-icon {
+  @include icon($bloody-bird);
+}
+
+.white-icon {
+  @include icon($white);
+}
+
+.black-icon {
+  @include icon($black);
+}
+
+.default-icon {
+  @include icon($greyhound);
+}
+
+mat-icon {
+  @include icon(inherit);
+  cursor: default;
+  height: auto !important;
+  width: auto !important;
+}
+
+mat-basic-chip {
+  @include icon(inherit);
+  font-size: 12px !important;
+}

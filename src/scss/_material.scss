@@ -1,0 +1,114 @@
+@import 'src/scss/globals';
+
+input {
+	padding: 0.5rem;
+	border-radius: $std-radius;
+	margin: 0;
+	outline: none;
+	border: 1px solid rgba(97, 101, 119, 0.4);
+
+	&[type=text] {
+		&:hover {}
+	}
+}
+
+
+$zone-height: 26rem;
+$zone-width: 35rem;
+
+.byrd-drop-zone {
+	height: $zone-height;
+	max-width: $zone-width;
+	border-radius: $std-radius;
+	background: $white;
+	@extend %shadow-rad;
+
+	.ngx-file-drop__content {
+		height: $zone-height !important;
+		padding-left: 2rem;
+		padding-right: 2rem;
+
+		.ngx-file-drop__drop-zone-label {
+			color: $metal-war;
+			font-size: 2rem;
+			margin-right: 1rem;
+		}
+
+		.ngx-file-drop__browse-btn {
+			cursor: pointer !important;
+			background: $bloody-bird;
+			color: white !important;
+			border: none;
+			border-radius: 1px;
+		}
+	}
+}
+
+ngx-file-drop {
+	z-index: 1;
+	opacity: 0.5;
+	width: 100%;
+	height: 100%;
+
+	.byrd-upload-drop-zone {
+		// background: $white;
+		min-height: 100%;
+		@extend %shadow-rad;
+
+		.ngx-file-drop__content {
+			height: 20rem !important;
+			padding-left: 2rem;
+			padding-right: 2rem;
+
+			*.ngx-file-drop__drop-zone-label {
+				color: $metal-war;
+				font-size: 2rem;
+				margin-right: 1rem;
+			}
+
+			.ngx-file-drop__browse-btn {
+				cursor: pointer !important;
+				background: $bloody-bird;
+				border: none;
+				border-radius: 1px;
+			}
+		}
+	}
+
+	.byrd-bookings-drop-zone {
+		height: 10rem;
+		// max-width: $zone-width;
+		border-radius: $std-radius;
+		background: $pro-bg;
+
+		.ngx-file-drop__content {
+			height: 10rem !important;
+			padding-left: 2rem;
+			padding-right: 2rem;
+
+			*.ngx-file-drop__drop-zone-label {
+				color: $metal-war;
+				font-size: 2rem;
+				margin-right: 1rem;
+			}
+
+			.ngx-file-drop__browse-btn {
+				cursor: pointer !important;
+				background: $bloody-bird;
+				border: none;
+				border-radius: 1px;
+			}
+		}
+	}
+}
+
+
+
+.mat-progress-bar {
+	height: 0.5rem !important;
+	position: absolute !important;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}

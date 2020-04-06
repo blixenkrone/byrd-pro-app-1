@@ -1,0 +1,40 @@
+<div class="drop-container">
+	<!-- _ *ngIf="isWait$ | async" -->
+	<div class="drop-zone-wrapper" (click)="zoneClicked(dropZone)">
+		<img [class.disabled-drop]="isWait" src="assets/logos/upload_add.svg" alt="Drop your material here">
+		<ng-container *ngIf="isWait; else loadingText">
+			<p class="drop-text">Processing...</p>
+		</ng-container>
+		<ng-template #loadingText>
+			<p class="drop-text">Drag and drop your photos/videos here or click the icon</p>
+		</ng-template>
+
+		<ngx-file-drop #dropZone dropZoneLabel="" [disabled]="isWait" (onFileDrop)="onFileDropped($event)"
+			(onFileLeave)="onFileLeave($event)" multiple="true" [showBrowseBtn]="false"
+			browseBtnClassName="byrd-upload-zone-btn" dropZoneClassName="byrd-upload-drop-zone">
+		</ngx-file-drop>
+	</div>
+</div>
+
+<!-- DROP -->
+<!-- <div class="upload-container">
+	<div class="upload-zone-wrapper" (click)="zoneClicked(dropZone)">
+		<img src="assets/logos/upload_add.svg" alt="Drop your material here">
+		<ngx-file-drop #dropZone dropZoneLabel="" (onFileDrop)="onFileDropped($event, data.files)"
+			(onFileOver)="onFileHover($event)" (onFileLeave)="onFileLeave($event)" multiple="true"
+			[showBrowseBtn]="false" browseBtnClassName="byrd-bookings-zone-btn"
+			dropZoneClassName="byrd-bookings-drop-zone">
+		</ngx-file-drop>
+	</div>
+</div> -->
+
+<!-- <div class="drop-container">
+	<div class="drop-zone-wrapper" (click)="zoneClicked(dropZone)">
+		<img src="assets/logos/upload_add.svg" alt="Drop your material here">
+		<ngx-file-drop #dropZone dropZoneLabel="" (onFileDrop)="onFileDropped($event)"
+			(onFileOver)="onFileHover($event)" (onFileLeave)="onFileLeave($event)" multiple="true"
+			[showBrowseBtn]="false" browseBtnClassName="byrd-bookings-zone-btn"
+			dropZoneClassName="byrd-bookings-drop-zone">
+		</ngx-file-drop>
+	</div>
+</div> -->

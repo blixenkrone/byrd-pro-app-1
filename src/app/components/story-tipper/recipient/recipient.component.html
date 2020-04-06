@@ -1,0 +1,24 @@
+<form [formGroup]="queryForm">
+  <!-- <input class="datalist-input" type="text" placeholder="Find medias" formControlName="medias"> -->
+  <ng-container *ngIf="(mediaSearchResults$ | async) as mediaSearchResults; else loadTmp">
+    <div class="search-results">
+      <ng-container *ngIf="mediaSearchResults.length === 0">
+        Found no media.
+      </ng-container>
+      <ng-container *ngFor="let media of mediaSearchResults; trackBy: media ? media.objectID : null; let i = index;">
+        <div appImgselect class="result" (click)="handleReceiver(media, i)">
+          <img src="{{media.userPicture}}" alt="{{media.displayName}}">
+        </div>
+      </ng-container>
+    </div>
+  </ng-container>
+  <ng-template #loadTmp>
+    <mat-progress-spinner color="accent" mode="indeterminate" diameter="50"></mat-progress-spinner>
+  </ng-template>
+</form>
+
+<!-- <div *ngIf="mediaReceivers">
+  <p class="datalist-btn" *ngFor="let m of mediaReceivers">
+    {{m.displayName}}
+  </p>
+</div> -->

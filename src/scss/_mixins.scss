@@ -1,0 +1,28 @@
+@import './colors';
+@import './buttons';
+
+// use for all btns
+@mixin pro-btn($bg-color:$gay-flame, $font-color:$white, $font-size:0.85rem, $width:10rem, $height:3rem) {
+	@extend %pro-btn-default;
+	background: $bg-color;
+	color: $font-color;
+	font-size: $font-size;
+	width: $width;
+	height: $height;
+}
+
+// scroll text
+@mixin text-scroll($max-width) {
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	max-width: $max-width;
+	overflow: scroll;
+}
+
+// use for all fonts
+@mixin pro-font($size: 1rem, $color: $black, $margin: 0rem) {
+	font-size: $size;
+	color: $color;
+	margin-left: $margin;
+	margin-right: $margin;
+}

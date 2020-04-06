@@ -1,0 +1,102 @@
+@import 'src/scss/globals';
+
+.container {
+
+	.upload-container {
+		padding: 2rem;
+		margin: 2rem;
+
+		// styled when active in &.active
+		&.passive {
+
+			app-stepper,
+			app-story-info,
+			app-story-index,
+			.component-header {
+				display: none;
+			}
+
+			app-dropzone {
+				display: flex;
+				justify-content: center;
+			}
+
+		}
+
+		&.active {
+			border-radius: $std-radius;
+			background: $white;
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			grid-template-areas:
+				"stepper stepper"
+				"header header"
+				"left right";
+			grid-gap: 0.5rem;
+
+			app-stepper {
+				grid-area: stepper;
+				margin: 1rem;
+			}
+
+			.component-header {
+				grid-area: header;
+				@extend %g-component-header;
+			}
+
+			app-dropzone {
+				display: flex;
+				justify-content: flex-end;
+				grid-area: left;
+			}
+
+			app-story-index {
+				grid-area: right;
+				align-self: center;
+			}
+
+			app-story-info {
+				grid-area: left;
+			}
+		}
+	}
+
+	.button-actions {
+		display: flex;
+
+		button {
+			display: block;
+			margin: auto;
+		}
+	}
+
+	.upload-complete {
+		max-width: 40rem;
+		margin: auto;
+		padding: 2rem;
+		text-align: center;
+		background: $white;
+		@extend %shadow-rad;
+
+		small {
+			margin-bottom: 3rem !important;
+		}
+
+		button {
+			width: 100%;
+			max-width: 100%;
+			margin-top: 1rem;
+		}
+	}
+
+}
+
+
+@media screen and (max-width: 500px) {
+	.container {
+		.upload-wrapper {
+			grid-gap: 0.25rem;
+			grid-template: auto / 1fr;
+		}
+	}
+}

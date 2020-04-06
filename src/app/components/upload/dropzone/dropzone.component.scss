@@ -1,0 +1,39 @@
+@import 'src/scss/colors';
+
+.drop-container {
+	margin-top: auto;
+	margin-bottom: auto;
+	width: 100%;
+	height: 100%;
+
+	.drop-zone-wrapper {
+
+		// ! Also Styled in _material.scss
+		height: 100%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		cursor: pointer;
+
+		img {
+			position: absolute;
+			max-width: 10rem;
+			z-index: 0;
+			padding: 1rem;
+
+			&.disabled-drop {
+				filter: blur(3px) grayscale(100%);
+			}
+
+		}
+
+		.drop-text {
+			position: absolute;
+			margin-top: 10rem;
+		}
+	}
+
+	.file-select {
+		text-align: center;
+	}
+}

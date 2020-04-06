@@ -1,0 +1,38 @@
+form {
+
+  .mat-form-field-appearance-outline,
+  .mat-form-field-appearance-outline-start,
+  .mat-form-field-appearance-outline-end {
+    border-radius: 3px;
+  }
+
+
+  mat-form-field,
+  .mat-form-field-appearance-outline,
+  .mat-form-field-appearance-outline-start {
+    width: 100%;
+
+    &.mat-focused {
+      // color: white !important;
+    }
+
+    .mat-form-field-outline-start{
+      border-radius: 3px 0 0 3px;
+    }
+    .mat-form-field-outline-gap{
+      // border-radius: 0 0 0 0;
+    }
+    .mat-form-field-outline-end {
+      border-radius: 0 3px 3px 0;
+    }
+
+    .mat-form-field-label {
+      // color: rgba(255, 255, 255, 0.87);
+    }
+
+    input {
+      border: none;
+      padding: 0;
+    }
+  }
+}

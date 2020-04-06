@@ -1,0 +1,20 @@
+/tmp
+/out-tsc
+/dist
+
+# dependencies
+/e2e
+/node_modules
+
+.settings/
+.vscode/*
+Procfile
+.github
+.gitignore
+
+# System Files
+.DS_Store
+Thumbs.db
+*.jpeg
+*.mp4
+/dist/byrd-pro-app/assets/teststories

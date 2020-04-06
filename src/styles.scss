@@ -1,0 +1,41 @@
+/* You can add global styles to this file, and also import other style files */
+@import 'src/scss/_backgrounds.scss';
+@import 'src/scss/_chips.scss';
+@import 'src/scss/_buttons.scss';
+@import 'src/scss/_colors.scss';
+@import 'src/scss/_gradients.scss';
+@import 'src/scss/_globals.scss';
+@import 'src/scss/_tags.scss';
+@import 'src/scss/_icons.scss';
+@import 'src/scss/_forms.scss';
+@import 'src/scss/_material.scss';
+@import 'src/scss/_mixins.scss';
+
+// URL imports
+// Material Icon library
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+html,
+body {
+  // height: 100%;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+body {
+  // margin: 0;
+  // padding: 1rem;
+  background: $pro-bg;
+  // background: $stale;
+  font-family: Chivo, "Regular" !important;
+  // color: rgba(255, 255, 255, 0.4);
+}
+
+* {
+  font-family: Chivo, "Regular";
+}

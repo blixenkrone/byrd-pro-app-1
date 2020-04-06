@@ -1,0 +1,37 @@
+// @import './colors';
+// @import './background';
+
+.w-100 {
+	width: 100% !important;
+}
+
+%pro-btn-default {
+	cursor: pointer;
+	border: none;
+	border-radius: 3px !important;
+	padding-top: 0.35rem !important;
+	padding-bottom: 0.35rem !important;
+	max-width: 10rem;
+	width: 100%;
+
+	&:disabled {
+		cursor: not-allowed;
+		opacity: 0.6;
+	}
+
+	&.loading {}
+}
+
+mat-flat-button {
+	@extend %pro-btn-default;
+}
+
+mat-button {
+	@extend %pro-btn-default;
+}
+
+button {
+	@extend %pro-btn-default;
+}
+
+// * @mixin available

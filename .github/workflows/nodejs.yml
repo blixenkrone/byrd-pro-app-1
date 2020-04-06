@@ -1,0 +1,50 @@
+name: pro application build
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: Build pro development
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout to master
+        uses: actions/checkout@master
+
+      - uses: actions/checkout@v1
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: "12.x"
+
+      - name: Login to DockerHub Registry
+        run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+      - name: Build the Docker image
+        run: |
+          docker build --build-arg "env=dev" --rm -f "Dockerfile" -t byrdapp/pro-app:dev .
+          docker build --build-arg "env=prod" --rm -f "Dockerfile" -t byrdapp/pro-app:prod .
+      - name: Push the Docker image to the registry
+        run: |
+          docker push byrdapp/pro-app:dev
+          docker push byrdapp/pro-app:prod
+
+  slack:
+    name: Notify on slack
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out master branch
+        uses: actions/checkout@master
+
+      - name: Notify slack
+        uses: rtCamp/action-slack-notify@master
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_TOKEN }}
+          SLACK_USERNAME: SweetBabyRays
+          SLACK_CHANNEL: "#deployments"
+          SLACK_COLOR: "#517122"
+          SLACK_ICON: https://avatars0.githubusercontent.com/u/7809248?s=400&v=4
+          SLACK_TITLE: "New version of angular pro app ready to be swarmed!"
+          SLACK_MESSAGE: "This will be awesome!"

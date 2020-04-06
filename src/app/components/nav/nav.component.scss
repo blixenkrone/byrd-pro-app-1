@@ -1,0 +1,59 @@
+@import 'src/scss/colors';
+@import 'src/scss/globals';
+@import 'src/scss/mixins';
+
+.container {
+
+	.navbar {
+		margin-bottom: 1rem;
+
+		.navbar-header {
+			display: flex;
+			justify-content: space-between;
+
+			&.login-screen {
+				justify-self: center;
+			}
+
+			img {
+				max-width: 6rem;
+				max-height: 6rem;
+				border-radius: 50%;
+				cursor: pointer;
+			}
+
+			.left {
+				display: flex;
+			}
+
+
+			.right {
+				display: flex;
+
+				h2 {
+					margin-right: 0.85rem;
+				}
+			}
+
+			.middle {
+				align-self: center;
+
+				a {
+					@include pro-font(1.5rem, inherit, 0.5rem)
+				}
+			}
+
+			.text {
+				align-self: center;
+			}
+		}
+	}
+}
+
+@media screen and (max-width: $media-breakpoint) {
+
+	.right,
+	.middle {
+		display: none;
+	}
+}

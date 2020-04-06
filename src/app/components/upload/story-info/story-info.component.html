@@ -1,0 +1,40 @@
+<div class="story-info-container">
+	<form [formGroup]="storyForm">
+		<mat-form-field appearance="outline">
+			<mat-label>Headline</mat-label>
+			<input matInput type="text" name="headline" formControlName="storyHeadline">
+		</mat-form-field>
+
+		<mat-form-field color="warn" appearance="outline">
+			<mat-label>Description</mat-label>
+			<input matInput type="text" name="description" formControlName="storyDescription">
+		</mat-form-field>
+
+		<mat-form-field appearance="outline" *ngIf="assignments$ | async as assignments; else loadTmp">
+			<mat-label>Assignment?</mat-label>
+			<select matNativeControl formControlName="assignmentId">
+				<option default></option>
+				<option *ngFor="let a of assignments" value="{{a.assignmentId}}">{{a.assignmentDescription}}
+				</option>
+			</select>
+		</mat-form-field>
+
+		<mat-slide-toggle class="slide-toggle" formControlName="isExclusive" color="warn">
+			<p>Exclusive?</p>
+		</mat-slide-toggle>
+
+		<div class="slider" *ngIf="checked">
+			<mat-slider thumbLabel color="warn" formControlName="storyPrice" [min]="slider.min" [max]="slider.max"
+				[step]="slider.step">
+			</mat-slider>
+			<ng-container *ngIf="(price$ | async) as price">
+				<p> Price in €: {{price}}</p>
+			</ng-container>
+		</div>
+
+
+	</form>
+</div>
+<ng-template #loadTmp>
+	<mat-spinner [diameter]="50" class="assignment-load" color="accent"></mat-spinner>
+</ng-template>

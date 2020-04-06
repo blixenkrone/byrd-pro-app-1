@@ -1,0 +1,77 @@
+<ng-container *ngIf="data; else loadTmp">
+	<div class="index-table">
+		<table class="table" cdkDropList cdkDragLockAxis="y" (cdkDropListDropped)="dragFile($event)">
+			<tr class="file" *ngFor="let f of data; let i=index;" cdkDrag [cdkDragDisabled]="step>1">
+				<div class="file-image">
+					<mat-icon *ngIf="step<=1" class="white-icon remove-file" (click)="removeStory(f, i)">clear
+					</mat-icon>
+					<img class="preview" *ngIf="f.thumbnail" src="{{previewSource(f.thumbnail)}}"
+						[ngClass]="{'cover-border': i===0}" alt="file # {{i}}">
+					<div class="meta" [ngClass]="f.meta ? 'success' : 'error'">
+						<ng-container *ngIf="f.meta">
+							<ng-container *ngIf="f.meta; else errorIcon">
+								<mat-basic-chip>meta verified</mat-basic-chip>
+							</ng-container>
+							<ng-template #errorIcon>
+								<mat-basic-chip *ngIf="f.meta?.missingExif">
+									{{f.meta}}
+								</mat-basic-chip>
+							</ng-template>
+						</ng-container>
+					</div>
+				</div>
+				<td class="file-text" *ngIf="f.meta">
+
+					<div class="info-text" *ngIf="i===0">
+						<mat-icon class="default-icon">filter_1</mat-icon>Cover image
+					</div>
+					<div class="info-text" *ngIf="f.file">
+						<mat-icon class="default-icon">insert_drive_file</mat-icon>{{ f.file.name }}
+					</div>
+					<div class="info-text" *ngIf="f.meta?.copyright">
+						<mat-icon class="default-icon">copyright</mat-icon>{{ f.meta?.copyright }}
+					</div>
+					<div class="info-text" *ngIf="f.meta?.date">
+						<mat-icon class="default-icon">watch_later</mat-icon>
+						{{f.meta?.date | date: 'dd/MM/yyyy HH:mm'}}
+					</div>
+					<div class="info-text" *ngIf="f.location">
+						<mat-icon class="default-icon">explore</mat-icon>
+						{{f.location?.locationText}}
+					</div>
+					<!-- <div class="info-text location"> -->
+					<!-- <ng-container *ngIf="geo && geo[i]">
+								<mat-icon class="default-icon">explore</mat-icon>
+								<ng-container *ngIf="geo[i]; then locFullTmp; else locStringTmp"></ng-container>
+								<ng-template #locFullTmp>
+									{{geo[i].locationText}}
+								</ng-template>
+								<ng-template #locStringTmp>
+									{{geo[i]?.locationAddress}} {{geo[i]?.locationCity}} {{geo[i]?.locationCountry}}
+								</ng-template>
+							</ng-container> -->
+					<!-- <ng-container
+								*ngIf="geo && !geo[i] && step===1 && exif && exif[i] && (!exif[i]?.data?.lat || !exif[i]?.data?.lng) || (fileType === 'video' && step===2)">
+								<form [formGroup]="locationForm">
+									<mat-form-field color="warn" appearance="outline">
+										<mat-label>Input location</mat-label>
+										<input matInput type="text" formControlName="place" [matAutocomplete]="auto">
+										<mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption="true"
+											class="mat-auto-locations">
+											<mat-option *ngFor="let loc of locationResults; trackBy: loc?.center"
+												[value]="loc.place_name" (click)="getLatLng(loc, i)">
+												{{loc.place_name}}
+											</mat-option>
+										</mat-autocomplete>
+									</mat-form-field>
+								</form>
+							</ng-container>
+						</div> -->
+				</td>
+			</tr>
+		</table>
+	</div>
+</ng-container>
+<ng-template #loadTmp>
+	<div style="text-align: center;">Getting data...</div>
+</ng-template>

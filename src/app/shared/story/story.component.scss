@@ -1,0 +1,53 @@
+@import 'src/scss/globals';
+@import 'src/scss/colors';
+
+.story-container {
+  div.story {
+    display: flex column;
+    @extend %shadow-rad;
+    margin: 0.25rem;
+    padding: 0.35rem;
+    cursor: pointer;
+    max-width: 15rem;
+
+    &:hover {
+      transform: scale(1.025);
+      transition: ease-in-out 0.2s;
+
+      img {
+        opacity: 0.5;
+      }
+
+    }
+
+    .vert-line {
+      border-left: 1px solid $stale;
+      height: auto;
+      margin: 0.5rem;
+      opacity: 0.4;
+    }
+
+    img.story-preview {
+      max-width: 100%;
+      height: auto;
+      border-radius: $std-radius;
+
+      &.img-selected {}
+
+    }
+
+    .story-text {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      @extend %scroll-text;
+
+      span.details {
+        font-size: 0.75rem;
+      }
+    }
+  }
+
+
+
+}

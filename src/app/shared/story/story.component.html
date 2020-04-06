@@ -1,0 +1,22 @@
+<ng-container *ngIf="story; else brokenTmp">
+  <div class="story-container">
+    <div class="story" appImgselect>
+      <img class="story-preview" src="{{story.media.mediaThumbnailImage}}"
+        alt="Thunbnail for story: {{story.storyHeadline}}">
+      <div class="vert-line"></div>
+      <div class="story-text">
+        <!-- <i class="fas fa-igloo"></i> -->
+        <!-- <p>{{story.storyDescription}}</p> -->
+        <span class="details">
+          {{(story.pictureDate ? story.pictureDate : story.uploadDate) | date: 'dd/MM/yyyy HH:mm'}}
+        </span>
+      </div>
+      <div class="headline">
+        <p>{{story.storyHeadline}}</p>
+      </div>
+    </div>
+  </div>
+</ng-container>
+<ng-template #brokenTmp>
+  Story is broken :()
+</ng-template>
