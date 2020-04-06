@@ -158,7 +158,7 @@ export class UploadComponent implements OnInit, OnDestroy {
 		const dialogRef = this.dialogService.openDialog(UploadDialogComponent, { isLoading: true, progress: 1 })
 		const storyRequest$ = this.uploadService.postByrdStoryPropeties$(story)
 
-		const storage$ = from(storageArray).pipe(
+		const storage$ = merge(storageArray).pipe(
 			mergeAll(),
 			exhaustMap((p) => {
 				console.log(`File is ${p?.toFixed(2)}% uploaded so im waiting`)
@@ -170,7 +170,7 @@ export class UploadComponent implements OnInit, OnDestroy {
 
 		storage$.pipe(
 			retry(2),
-			concatMap(v => storyRequest$),
+			switchMap(() => storyRequest$),
 			catchError(err => {
 				const msg = err.message_ ? err.message_ : err
 				console.log(err)
