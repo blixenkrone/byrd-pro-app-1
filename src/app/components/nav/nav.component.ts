@@ -16,7 +16,6 @@ export class NavComponent implements OnInit {
 		private router: Router) { }
 
 	@Input() user!: IProUser;
-	@Input() isWait!: boolean;
 
 	ngOnInit() { }
 

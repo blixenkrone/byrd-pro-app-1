@@ -29,6 +29,7 @@ export const requiredKeysMissing = (missings: string[]): string[] | null => {
 			}
 		}
 	}
+	console.log(out)
 	return out.length > 0 ? out : null;
 }
 
@@ -211,6 +212,7 @@ export interface IStoryValueOptions {
 
 // Represents the actual data handling - used in parent/child relation of all upload modules/components
 export interface IStoryFile {
+	checked?: boolean;
 	type?: EMediaType;
 	file: File;
 	/** preview to display in HTML */

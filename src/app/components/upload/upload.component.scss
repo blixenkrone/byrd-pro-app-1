@@ -25,7 +25,7 @@
 
 		&.active {
 			border-radius: $std-radius;
-			background: $white;
+			// background: $white;
 			display: grid;
 			grid-template-columns: 1fr 1fr;
 			grid-template-areas:

@@ -5,7 +5,12 @@
 .container {
 
 	.navbar {
-		margin-bottom: 1rem;
+		background: $white;
+		@include shadow-rad(0.5rem);
+		padding-top: 0.5rem;
+		border-radius: 3px;
+		padding-left: 0.5rem;
+		padding-right: 0.5rem;
 
 		.navbar-header {
 			display: flex;
@@ -16,8 +21,8 @@
 			}
 
 			img {
-				max-width: 6rem;
-				max-height: 6rem;
+				max-width: 5rem;
+				max-height: 5rem;
 				border-radius: 50%;
 				cursor: pointer;
 			}
@@ -37,6 +42,7 @@
 
 			.middle {
 				align-self: center;
+				text-align: center;
 
 				a {
 					@include pro-font(1.5rem, inherit, 0.5rem)

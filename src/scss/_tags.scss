@@ -15,8 +15,17 @@ a {
 	&:focus,
 	&.active {
 		cursor: pointer;
-		color: rgba($bloody-bird, 0.8) !important;
+		color: rgba($blue-1, 1) !important;
 		text-decoration: none;
+
+		&.bottom-border {
+			line-height: 3em;
+			display: inline-block;
+			text-decoration: none;
+			border-bottom: solid 5px $blue-1;
+			line-height: 5.25rem;
+			margin-bottom: -0.5rem;
+		}
 	}
 }
 

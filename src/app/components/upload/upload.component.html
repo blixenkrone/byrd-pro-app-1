@@ -1,40 +1,44 @@
-<ng-container *ngIf="(data$ | async) as data; else loadTmp">
-	<div class="container">
-		<div class="upload-container" [ngClass]="(activeDumpSubj$ | async) ? 'active': 'passive'">
-			<app-stepper [steps]="steps"></app-stepper>
-			<div class="component-header" *ngIf="headliners">
-				<h1>{{headliners[step-1].headline}}</h1>
-				<p>{{headliners[step-1].sub}}</p>
-			</div>
-			<app-dropzone *ngIf="step===1" [existingData]="data" [isWait]="(isWait$ | async)"></app-dropzone>
-			<app-story-info *ngIf="step===2" [storyForm]="storyForm"></app-story-info>
-			<app-story-index *ngIf="step<3" [step]="step" [data]="data" [isWait]="(isWait$ | async)"></app-story-index>
-			<!-- Success container -->
-			<ng-container *ngIf="step===3">
-				<div class="upload-complete animated tada">
-					<img src="assets/logos/upload_done.svg" alt="Upload done">
+<ng-container *ngIf="(finalData$ | async) as data; else loadTmp">
+	<ng-container *ngIf="(data$ | async) as tmpData; else loadTmp">
+		<div class="container">
+			<div class="upload-container" [ngClass]="(activeDumpSubj$ | async) ? 'active': 'passive'">
+				<app-stepper [steps]="steps"></app-stepper>
+				<div class="component-header" *ngIf="headliners">
+					<h1>{{headliners[step-1].headline}}</h1>
+					<p>{{headliners[step-1].sub}}</p>
+				</div>
+				<app-dropzone *ngIf="step===1" [existingData]="data" [isWait]="(isWait$ | async)"></app-dropzone>
+				<app-story-info *ngIf="step===2" [storyForm]="storyForm"></app-story-info>
+				<app-story-index *ngIf="step<3" [locationForm]="locationForm" [step]="step" [data]="data"
+					[isWait]="(isWait$ | async)">
+				</app-story-index>
+				<!-- Success container -->
+				<ng-container *ngIf="step===3">
+					<div class="upload-complete animated fadeInUp">
+						<img src="assets/logos/upload_done.svg" alt="Upload done">
 
-					<h2>Upload is complete!</h2>
-					<small>The story will be available shortly.</small>
-					<!-- <button class="bloody-bird-bg-inverted" mat-flat-button (click)="navigateTo('tip')"> Tip a media?</button> -->
-					<button class="bloody-bird-bg" mat-flat-button (click)="navigateTo('upload')">
-						Back to uploader
-					</button>
+						<h2>Upload is complete!</h2>
+						<small>The story will be available shortly.</small>
+						<!-- <button class="bloody-bird-bg-inverted" mat-flat-button (click)="navigateTo('tip')"> Tip a media?</button> -->
+						<button class="bloody-bird-bg" mat-flat-button (click)="navigateTo('upload')">
+							Back to uploader
+						</button>
+					</div>
+				</ng-container>
+			</div>
+
+			<ng-container *ngIf="(user$ | async) as user">
+				<div class="button-actions">
+					<button class="bloody-bird-bg" mat-flat-button *ngIf="step===1" (click)="setStep(2)"
+						[disabled]="(isWait$ | async) || data.length === 0"> Fill out information</button>
+					<button class="bloody-bird-bg" mat-flat-button *ngIf="step === 2"
+						(click)="setStep(step > 1 ? step-1 : 1)">Back</button>
+					<button class=" bloody-bird-bg" mat-flat-button *ngIf="step === 2" (click)="uploadStory(data, user)"
+						[disabled]="(isWait$ | async) === true || !storyForm.valid">Upload story</button>
 				</div>
 			</ng-container>
 		</div>
-
-		<ng-container *ngIf="(user$ | async) as user">
-			<div class="button-actions">
-				<button class="bloody-bird-bg" mat-flat-button *ngIf="step===1" (click)="setStep(2)"
-					[disabled]="(isWait$ | async) || data.length === 0"> Fill out information</button>
-				<button class="bloody-bird-bg" mat-flat-button *ngIf="step === 2"
-					(click)="setStep(step > 1 ? step-1 : 1)">Back</button>
-				<button class=" bloody-bird-bg" mat-flat-button *ngIf="step === 2" (click)="uploadStory(data, user)"
-					[disabled]="(isWait$ | async) === true || !storyForm.valid">Upload story</button>
-			</div>
-		</ng-container>
-	</div>
+	</ng-container>
 </ng-container>
 <ng-template #loadTmp>
 	LOADING

@@ -44,6 +44,7 @@ export class UploadComponent implements OnInit, OnDestroy {
 	locationResults$!: Observable<IGeocodingPlace[]>;
 
 	data$!: Observable<IStoryFile[]>;
+	finalData$!: Observable<IStoryFile[]>;
 
 	constructor(
 		private dialogService: DialogService,
@@ -63,81 +64,8 @@ export class UploadComponent implements OnInit, OnDestroy {
 			this.step = step;
 			this.step === 1 ? this.clearImgData() : null;
 		})
-		// this.locationForm = this.createLocationForm()
 
-		const files$ = this.uploadService.storyFilesToUpload$.pipe(
-			tap((f) => f.length === 0 ? this.activeDumpSubj$.next(false) : this.activeDumpSubj$.next(true)),
-			filter((f, idx) => f.length > 0 && idx >= 0),
-			// distinctUntilKeyChanged('file.name'),
-			catchError(err => throwError(err)),
-			takeUntil(this.destroyed$),
-			tap(files => console.log(files)),
-			share(),
-		)
-
-		const getMetadata$ = (storyData: IStoryFile[]) => {
-			const mediaType = storyData[0].type!
-			console.log(mediaType)
-			return this.uploadService.getMetadata$(storyData, mediaType, true).pipe(
-				filter(meta => meta instanceof Array ? meta.length > 0 : !!meta),
-				map(meta => meta instanceof Array ? meta : [meta]),
-				take(1),
-				retry(1),
-				debounceTime(1000),
-				catchError((err) => {
-					console.log(err)
-					return of(err)
-				})
-			)
-		}
-
-		const getGeoLocation$ = (meta: MetadataResponse[]) => {
-			let reqs: Observable<IGeoLocation>[] = [];
-			if (meta.length > 0) {
-				for (let [idx, val] of meta.entries()) {
-					const { lat, lng } = val.meta
-					if (lat && lng) {
-						reqs = [...reqs, this.locationService.getAddressByLatLng$({ lat, lng })]
-					}
-				}
-			}
-			return forkJoin(reqs).pipe(
-				catchError(() => of({ locationText: `No location found` } as IGeoLocation)),
-				tap(v => console.log(v)),
-				map(res => res instanceof Array ? res : [res]),
-			)
-		}
-
-		this.data$ = files$.pipe(
-			// distinctUntilKeyChanged('file.name' as any),
-			mergeMap(files => getMetadata$(files).pipe(
-				catchError(err => {
-					console.error(err)
-					return of(err)
-				}),
-				mergeMap(meta => getGeoLocation$(meta).pipe(
-					tap(() => console.log(meta)),
-					map(location => ({ files, meta, location })),
-				)),
-			)),
-			map((values) => values.files.map((v, idx) => ({
-				// ...v,
-				file: values.files[idx].file,
-				location: values.location[idx],
-				thumbnail: values.meta[idx].thumbnail,
-				meta: values.meta[idx].meta,
-				error: values.meta[idx].err ? values.meta[idx].err : undefined,
-				type: v.type,
-			}))),
-			startWith([]),
-			catchError((err, caught) => {
-				console.error(err)
-				return caught
-			}),
-			tap(d => this.uploadService.setFinal(d))
-		)
-
-		// this.data$ = this.uploadService.finalFiles$
+		this.initComponent()
 
 		this.storyForm = this.createStoryForm()
 
@@ -148,8 +76,7 @@ export class UploadComponent implements OnInit, OnDestroy {
 				this.storyInfoFormVal = info;
 			})
 
-		// ! WARN: To test
-		// this.setStep(2)
+		this.locationForm = this.createLocationForm()
 	}
 
 	ngOnDestroy() {
@@ -157,18 +84,10 @@ export class UploadComponent implements OnInit, OnDestroy {
 		this.destroyed$.unsubscribe()
 	}
 
-	compareFn(a: IStoryFile[], b: IStoryFile[]): boolean {
-		for (const [idx, prev] of a.entries()) {
-			for (const [idx, curr] of a.entries()) {
-				if (prev.file.name === curr.file.name) {
-					return false
-				}
-			}
-		}
-		return true
+	mapInputValues() {
+
 	}
 
-	// perc = (x[i] / sum) * 100;
 	uploadStory(storyData: IStoryFile[], user: IProUser) {
 		const mediaType = storyData[0].type!
 		const story = new Story(mediaType, user.userId, this.storyInfoFormVal, storyData)
@@ -176,9 +95,9 @@ export class UploadComponent implements OnInit, OnDestroy {
 		const dialogRef = this.dialogService.openDialog(UploadDialogComponent, { isLoading: true, progress: 1 })
 		const storyRequest$ = this.uploadService.postByrdStoryPropeties$(story)
 
-		const storage$ = merge(storageArray).pipe(
-			mergeAll(),
-			exhaustMap((p) => {
+		const storage$ = concat(storageArray).pipe(
+			concatAll(),
+			concatMap((p) => {
 				console.log(`File is ${p?.toFixed(2)}% uploaded so im waiting`)
 				this.dialogService.setDialogData({ progress: Number(p?.toFixed(2)), isLoading: true })
 				return of(p)
@@ -215,30 +134,83 @@ export class UploadComponent implements OnInit, OnDestroy {
 
 	}
 
-	// verifyMissingStoryData(meta: MetadataResponse[], storyArr: IStoryFile[]) {
-	// 	const requiredKeys = ['pixelXDimension', 'pixelYDimension', 'lat', 'lng', 'date']
-	// 	const missingKeys: string[] = []
-	// 	const geoExistsArr: { lat: number, lng: number }[] = [];
-	// 	for (let i = 0; i < meta.length; i++) {
-	// 		for (let j = 0; j < requiredKeys.length; j++) {
-	// 			// const obj: Object = x[i].data ? x[i].data : x[i].err;
-	// 			if (has(meta[i], 'err')) {
-	// 				missingKeys.push(requiredKeys[j])
-	// 				// storyArr[i].EXIF!.err.msg = `EXIF key ${requiredKeys[j]} missing`
-	// 				continue;
-	// 			}
-	// 		}
-	// 		if (has(meta[i].meta, 'lat') && has(meta[i].meta, 'lng')) {
-	// 			console.log('bugged')
-	// 			// const { lat, lng } = x[i].exif[i];
-	// 			// geoExistsArr.push({ lat, lng })
-	// 		}
-	// 	}
+	initComponent() {
+		const files$ = this.uploadService.storyFilesToUpload$.pipe(
+			tap((f) => f.length === 0 ? this.activeDumpSubj$.next(false) : this.activeDumpSubj$.next(true)),
+			filter((f, idx) => f.length > 0 && idx >= 0),
+			// distinctUntilKeyChanged('file.name'),
+			catchError(err => throwError(err)),
+			takeUntil(this.destroyed$),
+			tap(files => console.log(files)),
+			share(),
+		)
 
-	// 	this.uploadSrv.nextFilesUploadsArray(storyArr)
-	// 	this.locationSrv.setLocations(geoExistsArr)
-	// 	console.log('missingKeys?: ', missingKeys)
-	// }
+		const getMetadata$ = (storyData: IStoryFile[]) => {
+			const mediaType = storyData[0].type!
+			console.log(mediaType)
+			return this.uploadService.getMetadata$(storyData, mediaType, true).pipe(
+				filter(meta => meta instanceof Array ? meta.length > 0 : !!meta),
+				map(meta => meta instanceof Array ? meta : [meta]),
+				retry(1),
+				debounceTime(1000),
+				catchError((err) => {
+					console.log(err)
+					return of(err)
+				})
+			)
+		}
+
+		const getGeoLocation$ = (meta: MetadataResponse[]) => {
+			let reqs: Observable<IGeoLocation>[] = [];
+			if (meta.length > 0) {
+				for (let [idx, val] of meta.entries()) {
+					const { lat, lng } = val.meta
+					if (lat && lng) {
+						reqs = [...reqs, this.locationService.getAddressByLatLng$({ lat, lng })]
+					}
+				}
+			}
+			return forkJoin(reqs).pipe(
+				catchError(() => of({ locationText: `No location found` } as IGeoLocation)),
+				tap(v => console.log(v)),
+				map(res => res instanceof Array ? res : [res]),
+			)
+		}
+
+		this.data$ = files$.pipe(
+			mergeMap(files => getMetadata$(files).pipe(
+				catchError(err => {
+					console.error(err)
+					return of(err)
+				}),
+				mergeMap(meta => getGeoLocation$(meta).pipe(
+					tap(() => console.log(meta)),
+					map(location => ({ files, meta, location })),
+				)),
+			)),
+			map((values) => values.files.map((v, idx) => ({
+				// ...v,
+				file: values.files[idx].file,
+				location: values.location[idx],
+				thumbnail: values.meta[idx].thumbnail,
+				meta: values.meta[idx].meta,
+				error: values.meta[idx].err ? values.meta[idx].err : undefined,
+				type: v.type,
+			}))),
+			catchError((err, caught) => {
+				console.error(err)
+				return caught
+			}),
+			startWith([]),
+			tap(d => console.log(d)),
+			tap(d => this.uploadService.setFinal(d))
+		)
+
+		this.finalData$ = this.uploadService.finalFiles$.pipe(
+			tap(v => console.log(v)),
+			startWith([])
+		)
+	}
 
 	// * interface IStoryValueOptions
 	createStoryForm() {
@@ -259,13 +231,13 @@ export class UploadComponent implements OnInit, OnDestroy {
 		})
 	}
 
-	// createLocationForm() {
-	// 	return this.fb.group({
-	// 		place: ['', Validators.compose([
-	// 			Validators.maxLength(200)
-	// 		])]
-	// 	})
-	// }
+	createLocationForm() {
+		return this.fb.group({
+			place: ['', Validators.compose([
+				Validators.maxLength(200)
+			])]
+		})
+	}
 
 	navigateTo(path: string) {
 		window.location.reload()

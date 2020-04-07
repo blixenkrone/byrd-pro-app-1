@@ -23,6 +23,12 @@
 					cursor: default;
 					transform: scale(1);
 				}
+
+				// &.cdk-drag-placeholder {
+				// 	.file-text {
+				// 		display: none;
+				// 	}
+				// }
 			}
 
 			.file-image {
@@ -88,6 +94,8 @@
 				.file-name {
 					word-break: break-all;
 				}
+
+				&.not-dragging {}
 			}
 		}
 	}
