@@ -212,7 +212,6 @@ export interface IStoryValueOptions {
 
 // Represents the actual data handling - used in parent/child relation of all upload modules/components
 export interface IStoryFile {
-	checked?: boolean;
 	type?: EMediaType;
 	file: File;
 	/** preview to display in HTML */

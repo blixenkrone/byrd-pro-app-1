@@ -12,7 +12,7 @@ import { IProUser } from 'src/app/core/models/user.model';
 import { UserService } from 'src/app/services/user.service';
 import { DialogService } from 'src/app/shared/upload-dialog/upload-dialog.service';
 import { UploadDialogComponent } from 'src/app/shared/upload-dialog/upload-dialog.component';
-import { HttpResponse } from '@angular/common/http';
+import { has } from 'lodash';
 
 @Component({
 	selector: 'app-upload',
@@ -44,7 +44,6 @@ export class UploadComponent implements OnInit, OnDestroy {
 	locationResults$!: Observable<IGeocodingPlace[]>;
 
 	data$!: Observable<IStoryFile[]>;
-	finalData$!: Observable<IStoryFile[]>;
 
 	constructor(
 		private dialogService: DialogService,
@@ -177,17 +176,18 @@ export class UploadComponent implements OnInit, OnDestroy {
 			)
 		}
 
+
 		this.data$ = files$.pipe(
+			// map(val => val.filter(v => {
+			// 	if(has(v, ['v.meta', 'v.thumbnail'])){}
+			// })),
 			mergeMap(files => getMetadata$(files).pipe(
-				catchError(err => {
-					console.error(err)
-					return of(err)
-				}),
 				mergeMap(meta => getGeoLocation$(meta).pipe(
 					tap(() => console.log(meta)),
 					map(location => ({ files, meta, location })),
 				)),
 			)),
+			// withLatestFrom(files$),
 			map((values) => values.files.map((v, idx) => ({
 				// ...v,
 				file: values.files[idx].file,
@@ -203,12 +203,6 @@ export class UploadComponent implements OnInit, OnDestroy {
 			}),
 			startWith([]),
 			tap(d => console.log(d)),
-			tap(d => this.uploadService.setFinal(d))
-		)
-
-		this.finalData$ = this.uploadService.finalFiles$.pipe(
-			tap(v => console.log(v)),
-			startWith([])
 		)
 	}
 

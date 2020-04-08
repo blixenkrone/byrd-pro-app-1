@@ -51,6 +51,7 @@ ngx-file-drop {
 	height: 100%;
 
 	.byrd-upload-drop-zone {
+		height: 98%;
 		@extend %shadow-rad;
 
 		.ngx-file-drop__content {
