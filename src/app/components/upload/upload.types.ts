@@ -263,7 +263,7 @@ export interface IMetadata {
 }
 
 // Pro API metadata response
-export interface MetadataResponse {
+export interface IMetadataResponse {
 	meta: IMetadata;
 	thumbnail: (ArrayBuffer | any);
 	err?: any | { msg: string };

@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, InjectionToken, ChangeD
 import { CdkDragDrop, moveItemInArray, DragRef } from '@angular/cdk/drag-drop';
 import { UploadService, IGeoLocation, LocationService, IGeocodingPlace, IGeoCoordinates } from 'src/app/components/upload/upload.service';
 import { IStep } from 'src/app/shared/stepper/stepper.component';
-import { IStoryFile, MetadataResponse, IMetadata, requiredKeysMissing } from '../upload.types';
+import { IStoryFile, IMetadataResponse, IMetadata, requiredKeysMissing } from '../upload.types';
 import { FormGroup } from '@angular/forms';
 import { has } from 'lodash';
 import { takeUntil } from 'rxjs/operators';

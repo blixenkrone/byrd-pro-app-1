@@ -3,7 +3,7 @@ import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/
 import { IStep } from 'src/app/shared/stepper/stepper.component';
 import { UploadService, LocationService, IGeocodingPlace, IGeoLocation } from 'src/app/components/upload/upload.service';
 import { Observable, of, Subject, throwError, BehaviorSubject, combineLatest, concat, forkJoin, merge, zip, from, iif } from 'rxjs';
-import { IStoryFile, MetadataResponse, Story, IStoryValueOptions, IStoryUploadResponse } from './upload.types';
+import { IStoryFile, IMetadataResponse, Story, IStoryValueOptions, IStoryUploadResponse, IMetadata } from './upload.types';
 import { tap, takeUntil, catchError, debounceTime, share, map, startWith, distinctUntilChanged, filter, take, mergeMap, retry, switchMap, finalize, concatMap, exhaustMap, withLatestFrom, reduce, mergeAll, scan, delay, concatAll, mapTo, mergeScan, distinctUntilKeyChanged } from 'rxjs/operators';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -12,7 +12,7 @@ import { IProUser } from 'src/app/core/models/user.model';
 import { UserService } from 'src/app/services/user.service';
 import { DialogService } from 'src/app/shared/upload-dialog/upload-dialog.service';
 import { UploadDialogComponent } from 'src/app/shared/upload-dialog/upload-dialog.component';
-import { has } from 'lodash';
+import { has, hasIn } from 'lodash';
 
 @Component({
 	selector: 'app-upload',
@@ -159,7 +159,7 @@ export class UploadComponent implements OnInit, OnDestroy {
 			)
 		}
 
-		const getGeoLocation$ = (meta: MetadataResponse[]) => {
+		const getGeoLocation$ = (meta: IMetadataResponse[]) => {
 			let reqs: Observable<IGeoLocation>[] = [];
 			if (meta.length > 0) {
 				for (let [idx, val] of meta.entries()) {
@@ -181,13 +181,20 @@ export class UploadComponent implements OnInit, OnDestroy {
 			// map(val => val.filter(v => {
 			// 	if(has(v, ['v.meta', 'v.thumbnail'])){}
 			// })),
-			mergeMap(files => getMetadata$(files).pipe(
-				mergeMap(meta => getGeoLocation$(meta).pipe(
-					tap(() => console.log(meta)),
-					map(location => ({ files, meta, location })),
-				)),
-			)),
-			// withLatestFrom(files$),
+
+			switchMap(files => {
+				// _.hasIn(object, ['a', 'b']);
+				const filtered = files.filter(f => !hasIn(f, ['meta', 'thumbnail']))
+				console.log(filtered)
+				return of(filtered).pipe(
+					mergeMap(files => getMetadata$(files).pipe(
+						mergeMap((meta: IMetadataResponse[]) => getGeoLocation$(meta).pipe(
+							map(location => ({ files, meta, location })),
+						)),
+					)),
+					tap(val => console.log(val))
+				)
+			}),
 			map((values) => values.files.map((v, idx) => ({
 				// ...v,
 				file: values.files[idx].file,
@@ -197,6 +204,10 @@ export class UploadComponent implements OnInit, OnDestroy {
 				error: values.meta[idx].err ? values.meta[idx].err : undefined,
 				type: v.type,
 			}))),
+			// tap(d => console.log(d)),
+			// withLatestFrom(files$),
+			tap(d => console.log(d)),
+			// map(([prev, curr]) => ({ ...prev, ...curr })),
 			catchError((err, caught) => {
 				console.error(err)
 				return caught
