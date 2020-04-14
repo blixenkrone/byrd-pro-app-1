@@ -44,7 +44,7 @@
 									<mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption="true"
 										class="mat-auto-locations">
 										<mat-option *ngFor="let loc of locationResults" [value]="loc.place_name"
-											(click)="getLatLng(loc, i)">
+											(click)="getLatLng(f, loc, i)">
 											{{loc.place_name}}
 										</mat-option>
 									</mat-autocomplete>

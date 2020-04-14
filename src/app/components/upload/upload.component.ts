@@ -145,7 +145,7 @@ export class UploadComponent implements OnInit, OnDestroy {
 		)
 
 		const getMetadata$ = (storyData: IStoryFile[]) => {
-			if (storyData.length <= 0) { return throwError('No storyData') }
+			if (storyData.length <= 0) { return throwError('No storydata') }
 			const mediaType = storyData[0].type!
 			console.log(mediaType)
 			return this.uploadService.getMetadata$(storyData, mediaType, true).pipe(
