@@ -5,7 +5,7 @@
 				<img src="assets/icons/icon-192x192.png" (click)="navigateTo('upload')" alt="byrd-logo" class="logo">
 				<img src="assets/logos/pro_text.svg" (click)="navigateTo('upload')" alt="byrd-logo" class="logo">
 			</div>
-			<div class="middle">
+			<div class="middle" *ngIf="activeRoute !== '/login' && activeRoute !== '/'">
 				<div class="route" [class.active-route]="activeRoute === '/upload/stories'">
 					<img class="route-logo" src="assets/logos/cloud.svg" alt="#" (click)="navigateTo('upload')">
 					<a [routerLink]="['/upload']" routerLinkActive="active">Upload</a>

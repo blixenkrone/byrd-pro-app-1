@@ -4,7 +4,7 @@ import { IStep } from 'src/app/shared/stepper/stepper.component';
 import { UploadService, LocationService, IGeocodingPlace, IGeoLocation } from 'src/app/components/upload/upload.service';
 import { Observable, of, Subject, throwError, BehaviorSubject, combineLatest, concat, forkJoin, merge, zip, from, iif } from 'rxjs';
 import { IStoryFile, IMetadataResponse, Story, IStoryValueOptions, IStoryUploadResponse, IMetadata } from './upload.types';
-import { tap, takeUntil, catchError, debounceTime, share, map, startWith, distinctUntilChanged, filter, take, mergeMap, retry, switchMap, finalize, concatMap, exhaustMap, withLatestFrom, reduce, mergeAll, scan, delay, concatAll, mapTo, mergeScan, distinctUntilKeyChanged } from 'rxjs/operators';
+import { tap, takeUntil, catchError, debounceTime, share, map, startWith, distinctUntilChanged, filter, take, mergeMap, retry, switchMap, finalize, concatMap, exhaustMap, withLatestFrom, reduce, mergeAll, scan, delay, concatAll, mapTo, mergeScan, distinctUntilKeyChanged, partition, endWith } from 'rxjs/operators';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LoaderService } from 'src/app/core/load.service';
@@ -145,6 +145,7 @@ export class UploadComponent implements OnInit, OnDestroy {
 		)
 
 		const getMetadata$ = (storyData: IStoryFile[]) => {
+			if (storyData.length <= 0) { return throwError('No storyData') }
 			const mediaType = storyData[0].type!
 			console.log(mediaType)
 			return this.uploadService.getMetadata$(storyData, mediaType, true).pipe(
@@ -178,39 +179,38 @@ export class UploadComponent implements OnInit, OnDestroy {
 
 
 		this.data$ = files$.pipe(
-			// map(val => val.filter(v => {
-			// 	if(has(v, ['v.meta', 'v.thumbnail'])){}
-			// })),
-
-			switchMap(files => {
-				// _.hasIn(object, ['a', 'b']);
-				const filtered = files.filter(f => !hasIn(f, ['meta', 'thumbnail']))
+			mergeMap(files => {
+				const filtered = files.filter(f => !has(f, 'meta') && !has(f, 'thumbnail') && !has(f, 'location'))
+				const existing = files.filter(f => has(f, 'meta') || has(f, 'thumbnail') || has(f, 'location'))
 				console.log(filtered)
+				console.log(existing)
 				return of(filtered).pipe(
+					filter(p => p.length > 0),
 					mergeMap(files => getMetadata$(files).pipe(
 						mergeMap((meta: IMetadataResponse[]) => getGeoLocation$(meta).pipe(
 							map(location => ({ files, meta, location })),
 						)),
 					)),
-					tap(val => console.log(val))
+					map((values) => values.files.map((v, idx) => ({
+						file: values.files[idx].file,
+						location: values.location[idx],
+						thumbnail: values.meta[idx].thumbnail,
+						meta: values.meta[idx].meta,
+						error: values.meta[idx].err ? values.meta[idx].err : undefined,
+						type: v.type,
+					}) as IStoryFile)),
+					map(values => values.concat(existing)),
+					tap(val => console.log(val)),
 				)
 			}),
-			map((values) => values.files.map((v, idx) => ({
-				// ...v,
-				file: values.files[idx].file,
-				location: values.location[idx],
-				thumbnail: values.meta[idx].thumbnail,
-				meta: values.meta[idx].meta,
-				error: values.meta[idx].err ? values.meta[idx].err : undefined,
-				type: v.type,
-			}))),
+
 			// tap(d => console.log(d)),
 			// withLatestFrom(files$),
 			tap(d => console.log(d)),
 			// map(([prev, curr]) => ({ ...prev, ...curr })),
-			catchError((err, caught) => {
+			catchError((err) => {
 				console.error(err)
-				return caught
+				return throwError(err)
 			}),
 			startWith([]),
 			tap(d => console.log(d)),
