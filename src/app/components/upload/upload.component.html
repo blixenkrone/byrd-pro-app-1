@@ -29,7 +29,8 @@
 		<ng-container *ngIf="(user$ | async) as user">
 			<div class="button-actions">
 				<button class="bloody-bird-bg" mat-flat-button *ngIf="step===1" (click)="setStep(2)"
-					[disabled]="(isWait$ | async) || data.length === 0"> Fill out information</button>
+					[disabled]="(verifyValues$(data, user) | async) === false || (isWait$ | async) || data.length === 0">
+					Fill out information</button>
 				<button class="bloody-bird-bg" mat-flat-button *ngIf="step === 2"
 					(click)="setStep(step > 1 ? step-1 : 1)">Back</button>
 				<button class=" bloody-bird-bg" mat-flat-button *ngIf="step === 2" (click)="uploadStory(data, user)"

@@ -4,7 +4,7 @@ import { IStep } from 'src/app/shared/stepper/stepper.component';
 import { UploadService, LocationService, IGeocodingPlace, IGeoLocation } from 'src/app/components/upload/upload.service';
 import { Observable, of, Subject, throwError, BehaviorSubject, combineLatest, concat, forkJoin, merge, zip, from, iif } from 'rxjs';
 import { IStoryFile, IMetadataResponse, Story, IStoryValueOptions, IStoryUploadResponse, IMetadata } from './upload.types';
-import { tap, takeUntil, catchError, debounceTime, share, map, startWith, distinctUntilChanged, filter, take, mergeMap, retry, switchMap, finalize, concatMap, exhaustMap, withLatestFrom, reduce, mergeAll, scan, delay, concatAll, mapTo, mergeScan, distinctUntilKeyChanged, partition, endWith } from 'rxjs/operators';
+import { tap, takeUntil, catchError, debounceTime, share, map, startWith, distinctUntilChanged, filter, take, mergeMap, retry, switchMap, finalize, concatMap, exhaustMap, withLatestFrom, reduce, mergeAll, scan, delay, concatAll, mapTo, mergeScan, distinctUntilKeyChanged, partition, endWith, first } from 'rxjs/operators';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LoaderService } from 'src/app/core/load.service';
@@ -66,6 +66,8 @@ export class UploadComponent implements OnInit, OnDestroy {
 
 		this.initComponent()
 
+		this.verifiedValues$ = this.verifyValues$(val, user)
+
 		this.storyForm = this.createStoryForm()
 
 		this.storyForm.valueChanges
@@ -81,6 +83,37 @@ export class UploadComponent implements OnInit, OnDestroy {
 	ngOnDestroy() {
 		this.destroyed$.next()
 		this.destroyed$.unsubscribe()
+	}
+
+	// ! finish this
+	verifyValues$(val: IStoryFile[], user: IProUser): Observable<boolean> {
+		let falsemap = new Map<number, string>();
+		if (val.length > 0 && user.userId) {
+			const story = new Story(val[0].type!, user.userId, this.storyInfoFormVal, val)
+			falsemap = story.requiredKeys()
+		}
+		console.log('ran')
+		return of(falsemap).pipe(
+			debounceTime(1000),
+			distinctUntilChanged(),
+			filter((map) => map.size > 0),
+			exhaustMap((map) => {
+				let sIdx = '', sKey = '';
+				const idxkey = [...map.entries()].map(([sidx, key]) => {
+					return ({ idx: sidx, key: key })
+				})
+				Object.values(idxkey).map(({ idx, key }) => {
+					idx++
+					sIdx += idx.toString() + ' ';
+					sKey += key + ' ';
+				})
+				alert(`File(s) number ${sIdx} is missing input(s): ${sKey}. Please enter values.`)
+				return map
+			}),
+			map(kv => [...kv.entries()].length > 0 ? false : true),
+			tap(v => console.log(v)),
+			share(),
+		)
 	}
 
 	mapInputValues() {
