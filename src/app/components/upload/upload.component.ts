@@ -44,7 +44,6 @@ export class UploadComponent implements OnInit, OnDestroy {
 	locationResults$!: Observable<IGeocodingPlace[]>;
 
 	data$!: Observable<{ files: IStoryFile[], verified: boolean }>;
-	verifiedValues$!: Observable<boolean>;
 
 	constructor(
 		private dialogService: DialogService,
@@ -84,37 +83,6 @@ export class UploadComponent implements OnInit, OnDestroy {
 	ngOnDestroy() {
 		this.destroyed$.next()
 		this.destroyed$.unsubscribe()
-	}
-
-	// ! finish this
-	verifyValues$(val: IStoryFile[], user: IProUser): Observable<boolean> {
-		let falsemap = new Map<number, string>();
-		if (val.length > 0 && user.userId) {
-			const story = new Story(val[0].type!, user.userId, this.storyInfoFormVal, val)
-			falsemap = story.requiredKeys()
-		}
-		console.log('ran')
-		return of(falsemap).pipe(
-			debounceTime(1000),
-			distinctUntilChanged(),
-			filter((map) => map.size > 0),
-			exhaustMap((map) => {
-				let sIdx = '', sKey = '';
-				const idxkey = [...map.entries()].map(([sidx, key]) => {
-					return ({ idx: sidx, key: key })
-				})
-				Object.values(idxkey).map(({ idx, key }) => {
-					idx++
-					sIdx += idx.toString() + ' ';
-					sKey += key + ' ';
-				})
-				alert(`File(s) number ${sIdx} is missing input(s): ${sKey}. Please enter values.`)
-				return map
-			}),
-			map(kv => [...kv.entries()].length > 0 ? false : true),
-			tap(v => console.log(v)),
-			// share(),
-		)
 	}
 
 	mapInputValues() {
@@ -174,14 +142,13 @@ export class UploadComponent implements OnInit, OnDestroy {
 			// distinctUntilKeyChanged('file.name'),
 			catchError(err => throwError(err)),
 			takeUntil(this.destroyed$),
-			tap(files => console.log(files)),
+			// tap(files => console.log(files)),
 			share(),
 		)
 
 		const getMetadata$ = (storyData: IStoryFile[]) => {
 			if (storyData.length <= 0) { return throwError('No storydata') }
 			const mediaType = storyData[0].type!
-			console.log(mediaType)
 			return this.uploadService.getMetadata$(storyData, mediaType, true).pipe(
 				filter(meta => meta instanceof Array ? meta.length > 0 : !!meta),
 				map(meta => meta instanceof Array ? meta : [meta]),
@@ -206,18 +173,49 @@ export class UploadComponent implements OnInit, OnDestroy {
 			}
 			return forkJoin(reqs).pipe(
 				catchError(() => of({ locationText: `No location found` } as IGeoLocation)),
-				tap(v => console.log(v)),
+				// tap(v => console.log(v)),
 				map(res => res instanceof Array ? res : [res]),
 			)
 		}
 
 
+		const verifyValues$ = (val: IStoryFile[], user: IProUser): Observable<boolean> => {
+			let falsemap = new Map<number, string>();
+			if (val.length > 0 && user.userId) {
+				const story = new Story(val[0].type!, user.userId, this.storyInfoFormVal, val)
+				falsemap = story.requiredKeys()
+			}
+			if (falsemap.size <= 0) {
+				return of(true)
+			}
+			return of(falsemap).pipe(
+				debounceTime(1000),
+				switchMap((map) => {
+					let sIdx = '', sKey = '';
+					const idxkey = [...map.entries()].map(([sidx, key]) => {
+						return ({ idx: sidx, key: key })
+					})
+					Object.values(idxkey).map(({ idx, key }) => {
+						idx++
+						sIdx += idx.toString() + ' ';
+						sKey += key + ' ';
+					})
+					console.log(sIdx)
+					console.log(sKey)
+					alert(`File(s) number ${sIdx} is missing input(s): ${sKey}. Please enter values.`)
+					return map
+				}),
+				map(kv => [...kv.entries()].length > 0 ? false : true),
+				tap(v => console.log(v)),
+			)
+
+		}
+
+
 		this.data$ = files$.pipe(
-			mergeMap(files => {
+			switchMap(files => {
 				const filtered = files.filter(f => !has(f, 'meta') && !has(f, 'thumbnail') && !has(f, 'location'))
 				const existing = files.filter(f => has(f, 'meta') || has(f, 'thumbnail') || has(f, 'location'))
-				console.log(filtered)
-				console.log(existing)
 				return of(filtered).pipe(
 					filter(p => p.length > 0),
 					mergeMap(files => getMetadata$(files).pipe(
@@ -234,23 +232,24 @@ export class UploadComponent implements OnInit, OnDestroy {
 						type: v.type,
 					}) as IStoryFile)),
 					map(values => values.concat(existing)),
-					tap(val => console.log(val)),
+					tap(v => console.log(v))
 				)
 			}),
 			withLatestFrom(this.user$),
-			exhaustMap(([val, user]) => {
-				return this.verifyValues$(val, user).pipe(tap(v => console.log(v)))
+			concatMap(([files, user]) => {
+				return verifyValues$(files, user).pipe(
+					map(verified => ({ files, verified })),
+					// tap(v => console.log(v))
+				)
 			}),
-			withLatestFrom(files$),
-			map(([verified, files]) => ({ verified, files })),
-			tap(d => console.log(d)),
-			// map(([prev, curr]) => ({ ...prev, ...curr })),
+			tap(v => console.log(v)),
+			map(({ files, verified }) => ({ files, verified })),
 			catchError((err) => {
 				console.error(err)
 				return throwError(err)
 			}),
-			startWith({ files: [], verified: false }),
 			tap(d => console.log(d)),
+			startWith(({ files: [], verified: false })),
 		)
 	}
 

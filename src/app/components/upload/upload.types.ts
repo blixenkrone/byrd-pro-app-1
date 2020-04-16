@@ -167,6 +167,7 @@ export class Story implements IStoryBody {
 					missings.set(i, key)
 				}
 			})
+			console.log(checked)
 		}
 		return missings;
 	}
