@@ -4,7 +4,7 @@ import { IStep } from 'src/app/shared/stepper/stepper.component';
 import { UploadService, LocationService, IGeocodingPlace, IGeoLocation } from 'src/app/components/upload/upload.service';
 import { Observable, of, Subject, throwError, BehaviorSubject, combineLatest, concat, forkJoin, merge, zip, from, iif } from 'rxjs';
 import { IStoryFile, IMetadataResponse, Story, IStoryValueOptions, IStoryUploadResponse, IMetadata } from './upload.types';
-import { tap, takeUntil, catchError, debounceTime, share, map, startWith, distinctUntilChanged, filter, take, mergeMap, retry, switchMap, finalize, concatMap, exhaustMap, withLatestFrom, reduce, mergeAll, scan, delay, concatAll, mapTo, mergeScan, distinctUntilKeyChanged, partition, endWith, first } from 'rxjs/operators';
+import { tap, takeUntil, catchError, debounceTime, share, map, startWith, distinctUntilChanged, filter, take, mergeMap, retry, switchMap, finalize, concatMap, exhaustMap, withLatestFrom, reduce, mergeAll, scan, delay, concatAll, mapTo, mergeScan, distinctUntilKeyChanged, partition, endWith, first, shareReplay } from 'rxjs/operators';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LoaderService } from 'src/app/core/load.service';
@@ -239,7 +239,7 @@ export class UploadComponent implements OnInit, OnDestroy {
 			}),
 			withLatestFrom(this.user$),
 			exhaustMap(([val, user]) => {
-				return this.verifyValues$(val, user)
+				return this.verifyValues$(val, user).pipe(tap(v => console.log(v)))
 			}),
 			withLatestFrom(files$),
 			map(([verified, files]) => ({ verified, files })),

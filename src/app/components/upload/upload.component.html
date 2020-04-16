@@ -9,7 +9,7 @@
 			</div>
 			<app-dropzone *ngIf="step===1" [existingData]="data.files" [isWait]="(isWait$ | async)"></app-dropzone>
 			<app-story-info *ngIf="step===2" [storyForm]="storyForm"></app-story-info>
-			<app-story-index *ngIf="step<3" [locationForm]="locationForm" [step]="step" [data]="data.files"
+			<app-story-index *ngIf="step<3" [locationForm]="locationForm" [step]="step" [files]="data.files"
 				[isWait]="(isWait$ | async)">
 			</app-story-index>
 			<!-- Success container -->

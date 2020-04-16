@@ -1,7 +1,7 @@
-<ng-container *ngIf="data; else loadTmp">
+<ng-container *ngIf="files; else loadTmp">
 	<div class="index-table">
 		<table class="table" cdkDropList cdkDragLockAxis="y" (cdkDropListDropped)="dragFile($event)">
-			<tr class="file" *ngFor="let f of data; let i=index;" cdkDrag cdkDragPreviewClass="dragging"
+			<tr class="file" *ngFor="let f of files; let i=index;" cdkDrag cdkDragPreviewClass="dragging"
 				[cdkDragDisabled]="step>1">
 				<div class="file-image">
 					<mat-icon *ngIf="step<=1" class="white-icon remove-file" (click)="removeStory(f, i)">clear

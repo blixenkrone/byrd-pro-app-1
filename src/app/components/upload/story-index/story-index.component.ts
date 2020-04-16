@@ -20,7 +20,7 @@ export interface LatLngOutput {
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StoryIndexComponent implements OnInit, OnDestroy {
-	@Input() data!: IStoryFile[];
+	@Input() files!: IStoryFile[];
 	@Input() mediaType!: 'image' | 'video';
 	@Input() step!: number;
 	@Input() locationForm!: FormGroup;
@@ -61,16 +61,16 @@ export class StoryIndexComponent implements OnInit, OnDestroy {
 
 	dragFile(event: CdkDragDrop<IStoryFile[]>) {
 		// const src = this.data;
-		moveItemInArray(this.data, event.previousIndex, event.currentIndex);
+		moveItemInArray(this.files, event.previousIndex, event.currentIndex);
 		// this.uploadSrv.nextFilesUploadsArray(this.data)
 	}
 
 	removeStory(story: IStoryFile, idx: number) {
-		if (this.data.includes(story, idx) && this.data.indexOf(story) > -1) {
-			this.data.splice(idx, 1)
+		if (this.files.includes(story, idx) && this.files.indexOf(story) > -1) {
+			this.files.splice(idx, 1)
 		}
-		console.log(this.data)
-		this.uploadService.nextFilesUploadsArray(this.data)
+		console.log(this.files)
+		this.uploadService.nextFilesUploadsArray(this.files)
 	}
 	// click in html
 	getLatLng(geo: IGeocodingPlace, storyIdx: number) {
